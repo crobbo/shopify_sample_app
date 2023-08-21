@@ -7,9 +7,23 @@ class ApplicationController < ActionController::Base
     end
   end
  
+  private
+  
   def valid_cookie_exists
-    return true if cookies["shopify_app_session"]
+    if cookies["shopify_app_session"]
+      set_current_shop_session
+      true 
+    else
+      false
+    end
+  end 
 
-    false
+  def set_current_shop_session
+    @current_shop_session = cookies["shopify_app_session"]
   end
+
+  def current_shop_session
+    @current_shop_session
+  end
+  helper_method :current_shop_session
 end

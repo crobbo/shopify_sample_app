@@ -11,6 +11,10 @@
   </head>
 
   <body class="h-full">
-    <%= yield %>
+    <% if current_shop_session %>
+      <%= render "layouts/sidebar_layout" %>
+    <% else %>
+      <%= yield %>
+    <% end %>
   </body>
 </html>
