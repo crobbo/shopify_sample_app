@@ -18,5 +18,14 @@ module ShopifySampleApp
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    ShopifyAPI::Context.setup(
+      api_key: "5dd4a4e771d90bb4cf6386838e04212a",
+      api_secret_key: "78eb68550d6c47747c8986247a2f7ec4",
+      host: "https://sample-app.robbo.dev",
+      scope: "read_orders,read_products",
+      is_embedded: false, # Set to true if you are building an embedded app
+      api_version: "2022-01", # The version of the API you would like to use
+      is_private: false, # Set to true if you have an existing private app
+    )
   end
 end

@@ -1,0 +1,3 @@
+tunnel: 2fc8e4d8-01d0-4a46-a897-86f9d644d0a6
+credentials-file: .cloudflared/credentials.json
+noTLSVerify: true
