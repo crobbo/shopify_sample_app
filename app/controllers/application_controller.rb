@@ -26,4 +26,9 @@ class ApplicationController < ActionController::Base
     @current_shop_session
   end
   helper_method :current_shop_session
+
+  def current_shop
+    @current_shop ||= Shop.find_by(store_url: current_shop_session.split("_").first)
+  end
+  helper_method :current_shop
 end
