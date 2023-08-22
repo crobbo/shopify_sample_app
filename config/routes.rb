@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "articles#index"
   root "home#index"
+  get "/orders", to: "orders#index"
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
   get "/auth/callback", to: "shopify_auth#callback"
