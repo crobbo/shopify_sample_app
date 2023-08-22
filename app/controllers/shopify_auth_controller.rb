@@ -18,7 +18,22 @@ class ShopifyAuthController < ApplicationController
         http_only: true,
         value: auth_result[:cookie].value
       }
-  
+
+      shop = Shop.find_or_create_by(store_url: auth_result[:session].shop)
+
+      shop.update(
+        store_url: auth_result[:session].shop,
+        # scope: auth_result[:session][:scope],
+        auth_session_id: auth_result[:session].id,
+        state: auth_result[:session].state,
+        shopify_session_id: auth_result[:session].shopify_session_id,
+        access_token: auth_result[:session].access_token,
+        expires_at: auth_result[:session].expires.to_datetime,
+        is_online: auth_result[:session].online?
+      )
+
+      session[:shopify_test] = auth_result[:session]
+
       redirect_to root_path, notice: "Logged in!"
     rescue
       redirect_to root_path, notice: "Failed to authenticate"
