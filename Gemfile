@@ -56,6 +56,11 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem "better_errors"
   gem "binding_of_caller"
+  gem 'rspec-rails'
+  gem 'capybara'
+  gem 'database_cleaner'
+  gem "byebug"
+  gem "webmock"
 end
 
 group :development do
@@ -71,7 +76,6 @@ end
 
 group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
-  gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
 end

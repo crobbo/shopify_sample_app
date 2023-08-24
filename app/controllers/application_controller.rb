@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
 
   def authenitcate_user!
     if !valid_cookie_exists
-      redirect_to login_path unless request.path == "/login"
+      redirect_to login_path unless request.path == "/login" || request.path == "/auth/callback"
     end
   end
  
