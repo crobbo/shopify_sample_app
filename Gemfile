@@ -60,7 +60,7 @@ group :development, :test do
   gem 'capybara'
   gem 'database_cleaner'
   gem "byebug"
-  gem "webmock"
+  # gem "webmock"
 end
 
 group :development do

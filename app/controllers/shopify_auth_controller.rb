@@ -32,8 +32,6 @@ class ShopifyAuthController < ApplicationController
         is_online: auth_result[:session].online?
       )
 
-      session[:shopify_test] = auth_result[:session]
-
       redirect_to root_path, notice: "Logged in!"
     rescue
       redirect_to root_path, notice: "Failed to authenticate"

@@ -7,9 +7,9 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 require 'capybara'
 require 'support/database_cleaner'
-require 'webmock/rspec'
+# require 'webmock/rspec'
 # Add additional requires below this line. Rails is not loaded until this point!
-WebMock.disable_net_connect!(allow_localhost: true)
+# WebMock.disable_net_connect!(allow_localhost: true)
 
 Capybara.server_host = 'localhost'
 Capybara.server_port = '3001'
