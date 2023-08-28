@@ -1,50 +1,65 @@
-<div class="px-4 sm:px-6 lg:px-8">
-  <div class="sm:flex sm:items-center">
-    <div class="sm:flex-auto">
-      <h1 class="text-base font-semibold leading-6 text-gray-900">Orders</h1>
-      <p class="mt-2 text-sm text-gray-700"></p>
-    </div>
-    <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-      <%= form_with url: orders_path, method: :get, data: {turbo: false} do |f| %>
-        <div>
-          <%= f.date_select :date %>
-        </div>
-        <div class="mt-2">
-          <%= f.select :order_data, ["Revenue/Sales", "Taxes", "Payments", "Adjustments", "Liabilites", "Other Expenses/Shipping Charges", "Discounts"] %>
-        </div>
-        <div class="mt-2">
-          <%= f.submit "Get data", class: "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white
+<div class="flex justify-end">
+  <%= form_with url: orders_path, method: :get, data: {turbo: false} do |f| %>
+    <div class="flex flex-row items-center">
+      <div class="mr-2">
+        <%= f.date_select :date, 
+          selected: { 
+            year: (params.dig('date(1i)').presence || Date.current.year).to_i, 
+            month: (params.dig('date(2i)').presence || Date.current.month).to_i, 
+            day: (params.dig('date(3i)').presence || Date.current.day).to_i
+          } 
+        %>
+      </div>
+      <div class="mr-2">
+        <%= f.select :order_data, ["Revenue/Sales", "Taxes", "Payments", "Adjustments", "Liabilites", "Other Expenses/Shipping Charges", "Discounts"] %>
+      </div>
+      <div>
+        <%= f.submit "Get data", class: "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white
     shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 
     focus-visible:outline-offset-2 focus-visible:outline-indigo-600" %>
-        </div>
-      <% end %>
+      </div>
     </div>
-  </div>
-  <div class="mt-8 flow-root">
-    <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-      <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-        <table class="min-w-full divide-y divide-gray-300">
-          <thead>
-            <tr>
-              <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Product Name</th>
-              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Id</th>
-              <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Net Sales by Day</th>
-              <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-0">
-                <span class="sr-only">Edit</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-200">
-            <% @net_sales_by_product.each do |product_id, data|  %>
+  <% end %>
+</div>
+<% unless @data.nil? %>
+  <div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+      <div class="sm:flex-auto">
+        <h1 class="text-base font-semibold leading-6 text-gray-900">Orders</h1>
+        <p class="mt-2 text-sm text-gray-700"></p>
+      </div>
+      <!-- 
+      <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
+      </div>
+    -->
+    </div>
+    <div class="mt-8 flow-root">
+      <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+          <table class="min-w-full divide-y divide-gray-300">
+            <thead>
               <tr>
-                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= data["product_name"] %> </td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= product_id %></td>
-                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= data["net_sales"]%></td>
+                <% @table_headers.each do |header| %>
+                  <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0"><%= header %></th>
+                <% end %>
               </tr>
-            <% end %>
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <% @data.each_with_index do |row, index|  %>
+                <tr>
+                  <% row.count.times do |i| %>
+                    <% if i == 0 %>
+                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= row[@table_row_keys[i]] %> </td>
+                    <% else %>
+                      <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= row[@table_row_keys[i]] %></td>
+                    <% end %>
+                  <% end %>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
+<% end %>
