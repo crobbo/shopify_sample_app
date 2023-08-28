@@ -24,7 +24,7 @@ module ShopifySampleApp
       host: "https://sample-app.robbo.dev",
       scope: "read_orders,read_products",
       is_embedded: false, # Set to true if you are building an embedded app
-      api_version: "2022-10", # The version of the API you would like to use
+      api_version: "2023-07", # The version of the API you would like to use
       is_private: false, # Set to true if you have an existing private app
     )
   end
