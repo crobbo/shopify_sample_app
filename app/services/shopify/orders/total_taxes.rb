@@ -2,6 +2,11 @@
 module Shopify
   class Orders
     class TotalTaxes < Orders
+      def initialize(context)
+        @date = context.date
+        @session = context.session
+      end
+
       # Assumes all orders are in USD. If not, this will need to be updated. 
 
       private
@@ -9,6 +14,8 @@ module Shopify
       def fetch_data        
         orders = ShopifyAPI::Order.all(
           session: @session, 
+          created_at_min: @date.beginning_of_day.iso8601,
+          created_at_max: @date.end_of_day.iso8601,
           limit: 250
         )
 
@@ -20,6 +27,8 @@ module Shopify
     
           orders = ShopifyAPI::Order.all(
             session: @session, 
+            created_at_min: @date.beginning_of_day.iso8601,
+            created_at_max: @date.end_of_day.iso8601,
             limit: 250,
             page_info: ShopifyAPI::Product.next_page_info
           )
