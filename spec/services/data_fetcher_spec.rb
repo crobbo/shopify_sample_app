@@ -36,4 +36,24 @@ describe DataFetcher do
       expect(service.third).to eq (["product_name", "product_id", "net_sales"])
     end
   end
+
+  context "total taxes" do
+    let!(:json) do
+      file_fixture("orders_sample_response.json").read
+    end
+
+    before do
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?limit=250")
+        .to_return(body: json)
+    end
+
+    it "returns an array of hashes" do
+      session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
+      service = DataFetcher.call(Date.current, session, :total_taxes)
+
+      expect(service.first).to eq (15.92)
+      expect(service.second).to eq (["Total Taxes"])
+      expect(service.third).to eq (["total_taxes"])
+    end
+  end
 end

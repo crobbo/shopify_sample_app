@@ -9,8 +9,8 @@ class OrdersController < ApplicationController
 
     if params["date(1i)"] && params["date(2i)"] && params["date(3i)"]
       date = DateTime.parse("#{params["date(1i)"]}-#{params["date(2i)"]}-#{params["date(3i)"]}")
-
-      @data_object = DataFetcher.call(date, session, "net_sales_by_product")
+      # To do: update data_type to be dynamic based on params
+      @data_object = DataFetcher.call(date, session, :net_sales_by_product)
       @data = @data_object.first
       @table_headers = @data_object.second
       @table_row_keys = @data_object.third

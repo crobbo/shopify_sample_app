@@ -8,7 +8,8 @@ class DataFetcher < ApplicationService
   attr_reader :date, :session
 
   SHOPIFY_DATA = {
-    net_sales_by_product: Shopify::Orders::NetSalesByProduct
+    net_sales_by_product: Shopify::Orders::NetSalesByProduct,
+    total_taxes: Shopify::Orders::TotalTaxes
   }
 
   def call
@@ -19,13 +20,15 @@ class DataFetcher < ApplicationService
 
   def table_headers 
     {
-      net_sales_by_product: ["Product Name", "Product ID", "Net Sales By Day"]
+      net_sales_by_product: ["Product Name", "Product ID", "Net Sales By Day"],
+      total_taxes: ["Total Taxes"]
     }.freeze
   end
 
   def table_row_keys
     {
-      net_sales_by_product: ["product_name", "product_id", "net_sales"]
+      net_sales_by_product: ["product_name", "product_id", "net_sales"],
+      total_taxes: ["total_taxes"]
     }.freeze
   end
 end
