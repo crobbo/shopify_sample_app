@@ -83,4 +83,24 @@ describe DataFetcher do
       expect(service.third).to eq (["gateway", "payments_received"])
     end
   end
+
+  context "payout fees" do
+    let(:json) do
+      file_fixture("payouts_sample_response.json").read
+    end
+
+    before do
+      stub_request(:get, "https://example.com/admin/api/2023-07/shopify_payments/payouts.json?date_max=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&date_min=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&limit=250")
+        .to_return(body: json)
+    end
+
+    it "returns an array of hashes" do
+      session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
+      service = DataFetcher.call(Date.current, session, :payout_fees)
+
+      expect(service.first).to eq ([{"gateway"=>"shopify_payments", "fee_payouts"=> 19.66}])
+      expect(service.second).to eq (["Gateway", "Fee Payouts"])
+      expect(service.third).to eq (["gateway", "fee_payouts"])
+    end
+  end
 end
