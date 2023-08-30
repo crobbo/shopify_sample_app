@@ -1,7 +1,7 @@
 # app/services/tweet_creator.rb
 module Shopify
-  class Orders
-    class TotalTaxes < Orders
+  module Orders
+    class TotalTaxes < DataFetch
       def initialize(context)
         @date = context.date
         @session = context.session

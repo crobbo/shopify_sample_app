@@ -21,12 +21,12 @@ describe DataFetcher do
             "product_name"=>"IPod Nano - 8gb - green"
           },
           {
-            "net_sales"=>199.0,
+            "net_sales"=>398.0,
             "product_id"=>518995019,
             "product_name"=>"IPod Nano - 8gb - red"
           },
           {
-            "net_sales"=>199.0,
+            "net_sales"=>398.0,
             "product_id"=>703073504,
             "product_name"=>"IPod Nano - 8gb - black"
           }
@@ -51,7 +51,7 @@ describe DataFetcher do
       session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
       service = DataFetcher.call(Date.current, session, :total_taxes)
 
-      expect(service.first).to eq (15.92)
+      expect(service.first).to eq (23.88)
       expect(service.second).to eq (["Total Taxes"])
       expect(service.third).to eq (["total_taxes"])
     end

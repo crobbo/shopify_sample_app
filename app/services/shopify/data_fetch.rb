@@ -1,5 +1,5 @@
 module Shopify
-  class Orders
+  class DataFetch
     def initialize(context)
       @session = context.session
     end
