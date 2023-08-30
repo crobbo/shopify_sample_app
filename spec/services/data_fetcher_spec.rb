@@ -1,9 +1,9 @@
 describe DataFetcher do
+  let!(:json) do
+    file_fixture("orders_sample_response.json").read
+  end
+  
   context "net sales by product" do
-    let!(:json) do
-      file_fixture("orders_sample_response.json").read
-    end
-
     before do
       stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
         .to_return(body: json)
@@ -38,10 +38,6 @@ describe DataFetcher do
   end
 
   context "total taxes" do
-    let!(:json) do
-      file_fixture("orders_sample_response.json").read
-    end
-
     before do
       stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
         .to_return(body: json)
@@ -54,6 +50,37 @@ describe DataFetcher do
       expect(service.first).to eq (23.88)
       expect(service.second).to eq (["Total Taxes"])
       expect(service.third).to eq (["total_taxes"])
+    end
+  end
+
+  context "order transactions" do
+    before do
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
+        .to_return(body: json)
+
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders/450789469/transactions.json")
+        .to_return(body: file_fixture("transaction_sample_response_450789469.json").read)
+
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders/450789470/transactions.json")
+        .to_return(body: file_fixture("transaction_sample_response_450789470.json").read)
+    end
+
+    it "returns an array of hashes" do
+      session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
+      service = DataFetcher.call(Date.current, session, :order_transactions)
+
+      expect(service.first).to eq ([
+        {
+          "gateway"=>"shopify_payments",
+          "payments_received"=> 597.0
+        },
+        {
+          "gateway"=>"paypal",
+          "payments_received"=> 597.0
+        }
+      ])
+      expect(service.second).to eq (["Gateway", "Payments Received"])
+      expect(service.third).to eq (["gateway", "payments_received"])
     end
   end
 end

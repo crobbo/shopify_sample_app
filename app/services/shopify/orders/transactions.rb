@@ -1,16 +1,16 @@
 module Shopify
   module Orders
-    class NetSalesByProduct < DataFetch
+    class Transactions < DataFetch
       def initialize(context)
         @date = context.date
         @session = context.session
       end
 
       private
-    
+          
       def fetch_data
-        @temp_hash = Hash.new { |hash, key| hash[key] = { "net_sales" => 0.0, "product_name" => '' } }
-        net_sales_by_product = []
+        @temp_hash = Hash.new { |hash, key| hash[key] = { "payments_received" => 0.0 } }
+        payments_by_gateway = []
         
         orders = ShopifyAPI::Order.all(
           session: @session, 
@@ -20,7 +20,7 @@ module Shopify
         )
     
         loop do
-          build_net_sales_hash(orders)
+          build_transactions_hash(orders)
           break unless ShopifyAPI::Product.next_page?
     
           orders = ShopifyAPI::Order.all(
@@ -32,22 +32,24 @@ module Shopify
           )
         end
     
-        @temp_hash.each do |product_id, data|
-          net_sales_by_product << { "product_id" => product_id, "product_name" => data["product_name"], "net_sales" => data["net_sales"] }
+        @temp_hash.each do |gateway, data|
+          payments_by_gateway << { "gateway" => gateway, "payments_received" => data["payments_received"] }
         end
       
-        net_sales_by_product
+        payments_by_gateway
       end
-    
-      def build_net_sales_hash(orders)    
+
+      def build_transactions_hash(orders)    
         orders.each do |order|
-          order.line_items.each do |line_item|
-            product_id = line_item["id"]
-            product_name = line_item["name"]
-            product_total = line_item["price"].to_f * line_item["quantity"].to_i
-      
-            @temp_hash[product_id]["net_sales"] += product_total
-            @temp_hash[product_id]["product_name"] = product_name
+          transactions = ShopifyAPI::Transaction.all(order_id: order.id, session: @session)
+
+          transactions.each do |transaction|
+            next unless transaction.kind == "sale"
+
+            gateway = transaction.gateway
+            amount = transaction.amount.to_f
+
+            @temp_hash[gateway]["payments_received"] += amount
           end
         end
       end

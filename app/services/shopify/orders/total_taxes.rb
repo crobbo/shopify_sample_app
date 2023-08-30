@@ -1,4 +1,3 @@
-# app/services/tweet_creator.rb
 module Shopify
   module Orders
     class TotalTaxes < DataFetch
