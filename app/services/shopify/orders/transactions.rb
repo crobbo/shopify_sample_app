@@ -1,11 +1,6 @@
 module Shopify
   module Orders
     class Transactions < DataFetch
-      def initialize(context)
-        @date = context.date
-        @session = context.session
-      end
-
       private
           
       def fetch_data

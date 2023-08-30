@@ -1,13 +1,7 @@
 module Shopify
   module Orders
     class TotalTaxes < DataFetch
-      def initialize(context)
-        @date = context.date
-        @session = context.session
-      end
-
       # Assumes all orders are in USD. If not, this will need to be updated. 
-
       private
     
       def fetch_data        
@@ -37,15 +31,13 @@ module Shopify
       end
     
       def sum_total_taxes(orders) 
-        sum = 0
-        orders.each do |order|
-          order.line_items.each do |line_item|
-            line_item["tax_lines"].each do |tax_line|
-              sum += tax_line["price"].to_f
+        orders.sum do |order|
+          order.line_items.sum do |line_item|
+            line_item["tax_lines"].sum do |tax_line|
+              tax_line["price"].to_f
             end
           end
         end
-        sum
       end
     end
   end

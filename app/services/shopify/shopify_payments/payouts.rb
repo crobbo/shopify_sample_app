@@ -2,11 +2,6 @@ module Shopify
   module ShopifyPayments
     # limited to shopify payment processor
     class Payouts < DataFetch
-      def initialize(context)
-        @date = context.date
-        @session = context.session
-      end
-
       private
           
       def fetch_data

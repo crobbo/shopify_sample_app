@@ -1,6 +1,7 @@
 module Shopify
   class DataFetch
     def initialize(context)
+      @date = context.date
       @session = context.session
     end
 
