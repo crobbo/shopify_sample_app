@@ -11,7 +11,8 @@ class DataFetcher < ApplicationService
     net_sales_by_product: Shopify::Orders::NetSalesByProduct,
     total_taxes: Shopify::Orders::TotalTaxes,
     order_transactions: Shopify::Orders::Transactions,
-    payout_fees: Shopify::ShopifyPayments::Payouts
+    payout_fees: Shopify::ShopifyPayments::Payouts,
+    liabilities: Shopify::Orders::Liabilities
   }
 
   def call
@@ -25,7 +26,8 @@ class DataFetcher < ApplicationService
       net_sales_by_product: ["Product Name", "Product ID", "Net Sales By Day"],
       total_taxes: ["Total Taxes"],
       order_transactions: ["Gateway", "Payments Received"],
-      payout_fees: ["Gateway", "Fee Payouts"]
+      payout_fees: ["Gateway", "Fee Payouts"],
+      liabilities: ["Liabilities"]
     }.freeze
   end
 
@@ -34,7 +36,8 @@ class DataFetcher < ApplicationService
       net_sales_by_product: ["product_name", "product_id", "net_sales"],
       total_taxes: ["total_taxes"],
       order_transactions: ["gateway", "payments_received"],
-      payout_fees: ["gateway", "fee_payouts"]
+      payout_fees: ["gateway", "fee_payouts"],
+      liabilities: ["liabilities"]
     }.freeze
   end
 end
