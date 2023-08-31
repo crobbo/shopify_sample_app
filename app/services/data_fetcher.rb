@@ -13,7 +13,8 @@ class DataFetcher < ApplicationService
     order_transactions: Shopify::Orders::Transactions,
     payout_fees: Shopify::ShopifyPayments::Payouts,
     liabilities: Shopify::Orders::Liabilities,
-    shipping: Shopify::Orders::Shipping
+    shipping: Shopify::Orders::Shipping,
+    discounts: Shopify::Orders::Discounts
   }
 
   def call
@@ -29,7 +30,8 @@ class DataFetcher < ApplicationService
       order_transactions: ["Gateway", "Payments Received"],
       payout_fees: ["Gateway", "Fee Payouts"],
       liabilities: ["Liabilities"],
-      shipping: ["Shipping"]
+      shipping: ["Shipping"],
+      discounts: ["Discounts"]
     }.freeze
   end
 
@@ -40,7 +42,8 @@ class DataFetcher < ApplicationService
       order_transactions: ["gateway", "payments_received"],
       payout_fees: ["gateway", "fee_payouts"],
       liabilities: ["liabilities"],
-      shipping: ["shipping"]
+      shipping: ["shipping"],
+      discounts: ["discounts"]
     }.freeze
   end
 end
