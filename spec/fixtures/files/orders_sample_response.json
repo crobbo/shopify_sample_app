@@ -183,7 +183,7 @@
       "total_price_usd": "598.94",
       "total_shipping_price_set": {
         "shop_money": {
-          "amount": "0.00",
+          "amount": "40.00",
           "currency_code": "USD"
         },
         "presentment_money": {
@@ -1159,7 +1159,7 @@
       "total_price_usd": "598.94",
       "total_shipping_price_set": {
         "shop_money": {
-          "amount": "0.00",
+          "amount": "22.00",
           "currency_code": "USD"
         },
         "presentment_money": {

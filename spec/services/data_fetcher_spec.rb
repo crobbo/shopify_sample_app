@@ -119,4 +119,20 @@ describe DataFetcher do
       expect(service.third).to eq (["liabilities"])
     end
   end
+
+  context "liabilites" do
+    before do
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
+        .to_return(body: json)
+    end
+
+    it "returns an array of hashes" do
+      session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
+      service = DataFetcher.call(Date.current, session, :shipping)
+
+      expect(service.first).to eq (62)
+      expect(service.second).to eq (["Shipping"])
+      expect(service.third).to eq (["shipping"])
+    end
+  end
 end
