@@ -31,6 +31,8 @@ module Shopify
     
       def sum_shpping_cost(orders) 
         orders.sum do |order|
+          next 0 if order.financial_status != 'paid'
+          
           order.total_discounts.to_f 
         end
       end

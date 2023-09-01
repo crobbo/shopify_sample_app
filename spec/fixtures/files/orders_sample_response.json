@@ -80,7 +80,7 @@
       ],
       "email": "bob.norman@mail.example.com",
       "estimated_taxes": false,
-      "financial_status": "partially_refunded",
+      "financial_status": "paid",
       "fulfillment_status": null,
       "gateway": "authorize_net",
       "landing_site": "http://www.example.com?source=abc",

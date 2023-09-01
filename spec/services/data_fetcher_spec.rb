@@ -16,17 +16,17 @@ describe DataFetcher do
       expect(service.first).to eq (
         [
           {
-            "net_sales"=>398.0,
+            "net_sales"=>199.00,
             "product_id"=>466157049,
             "product_name"=>"IPod Nano - 8gb - green"
           },
           {
-            "net_sales"=>398.0,
+            "net_sales"=>199.0,
             "product_id"=>518995019,
             "product_name"=>"IPod Nano - 8gb - red"
           },
           {
-            "net_sales"=>398.0,
+            "net_sales"=>199.00,
             "product_id"=>703073504,
             "product_name"=>"IPod Nano - 8gb - black"
           }
@@ -47,7 +47,7 @@ describe DataFetcher do
       session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
       service = DataFetcher.call(Date.current, session, :total_taxes)
 
-      expect(service.first).to eq (23.88)
+      expect(service.first).to eq (11.94)
       expect(service.second).to eq (["Total Taxes"])
       expect(service.third).to eq (["total_taxes"])
     end
@@ -72,11 +72,11 @@ describe DataFetcher do
       expect(service.first).to eq ([
         {
           "gateway"=>"shopify_payments",
-          "payments_received"=> 597.0
+          "payments_received"=> 598.94
         },
         {
           "gateway"=>"paypal",
-          "payments_received"=> 597.0
+          "payments_received"=> 598.94
         }
       ])
       expect(service.second).to eq (["Gateway", "Payments Received"])
@@ -120,7 +120,7 @@ describe DataFetcher do
     end
   end
 
-  context "liabilites" do
+  context "shipping" do
     before do
       stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
         .to_return(body: json)
@@ -136,7 +136,7 @@ describe DataFetcher do
     end
   end
 
-  context "liabilites" do
+  context "discounts" do
     before do
       stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
         .to_return(body: json)
@@ -146,9 +146,39 @@ describe DataFetcher do
       session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
       service = DataFetcher.call(Date.current, session, :discounts)
 
-      expect(service.first).to eq (20)
+      expect(service.first).to eq (10)
       expect(service.second).to eq (["Discounts"])
       expect(service.third).to eq (["discounts"])
+    end
+  end
+
+  context "data validations" do
+    let(:payout_json) do
+      file_fixture("payouts_sample_response.json").read
+    end
+
+    before do
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&limit=250")
+        .to_return(body: json)
+
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders/450789469/transactions.json")
+        .to_return(body: file_fixture("transaction_sample_response_450789469.json").read)
+
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders/450789470/transactions.json")
+        .to_return(body: file_fixture("transaction_sample_response_450789470.json").read)
+      
+      stub_request(:get, "https://example.com/admin/api/2023-07/shopify_payments/payouts.json?date_max=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&date_min=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&limit=250")
+        .to_return(body: payout_json)
+      
+      stub_request(:get, "https://example.com/admin/api/2023-07/orders.json?created_at_max=#{Date.current.strftime("%Y-%m-%d")}T23:59:59Z&created_at_min=#{Date.current.strftime("%Y-%m-%d")}T00:00:00Z&financial_status=paid&limit=250&status=open")
+        .to_return(body: json)
+    end
+
+    it "returns zero" do
+      session = ShopifyAPI::Auth::Session.new(shop: "example.com", access_token: "token123")
+      service = DataValidator.call(Date.current, session)
+
+      expect(service).to eq (0)
     end
   end
 end

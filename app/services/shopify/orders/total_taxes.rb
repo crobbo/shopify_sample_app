@@ -32,6 +32,8 @@ module Shopify
     
       def sum_total_taxes(orders) 
         orders.sum do |order|
+          next 0 if order.financial_status != 'paid'
+
           order.line_items.sum do |line_item|
             line_item["tax_lines"].sum do |tax_line|
               tax_line["price"].to_f

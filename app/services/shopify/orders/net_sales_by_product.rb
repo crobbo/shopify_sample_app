@@ -36,6 +36,8 @@ module Shopify
     
       def build_net_sales_hash(orders)    
         orders.each do |order|
+          next if order.financial_status != 'paid'
+          
           order.line_items.each do |line_item|
             product_id = line_item["id"]
             product_name = line_item["name"]
