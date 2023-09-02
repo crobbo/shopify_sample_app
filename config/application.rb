@@ -19,9 +19,9 @@ module ShopifySampleApp
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
     ShopifyAPI::Context.setup(
-      api_key: "5dd4a4e771d90bb4cf6386838e04212a",
-      api_secret_key: "78eb68550d6c47747c8986247a2f7ec4",
-      host: "https://sample-app.robbo.dev",
+      api_key: Rails.application.credentials.shopify[:api_key],
+      api_secret_key: Rails.application.credentials.shopify[:api_secret_key],
+      host: Rails.application.credentials.shopify[:host],
       scope: "read_orders,read_products,read_shopify_payments_payouts",
       is_embedded: false, # Set to true if you are building an embedded app
       api_version: "2023-07", # The version of the API you would like to use
