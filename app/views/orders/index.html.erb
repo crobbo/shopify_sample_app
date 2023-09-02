@@ -4,14 +4,15 @@
       <div class="mr-2">
         <%= f.date_select :date, 
           selected: { 
-            year: (params.dig('date(1i)').presence || Date.current.year).to_i, 
-            month: (params.dig('date(2i)').presence || Date.current.month).to_i, 
-            day: (params.dig('date(3i)').presence || Date.current.day).to_i
+          year: (@selected_date['date(1i)'].presence || Date.current.year).to_i, 
+          month: (@selected_date['date(2i)'].presence || Date.current.month).to_i, 
+          day: (@selected_date['date(3i)'].presence || Date.current.day).to_i
           } 
         %>
       </div>
       <div class="mr-2">
-        <%= f.select :order_data, ["Revenue/Sales", "Taxes", "Payments", "Adjustments", "Liabilites", "Other Expenses/Shipping Charges", "Discounts"] %>
+        <%= f.select :order_data, ["Revenue/Sales", "Taxes", "Payments", "Adjustments", "Liabilities", "Other Expenses/Shipping Charges", "Discounts"], 
+          selected: @selected_order_data.presence || "Revenue/Sales"        %>
       </div>
       <div>
         <%= f.submit "Get data", class: "rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white

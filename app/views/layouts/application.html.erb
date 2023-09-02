@@ -11,6 +11,8 @@
   </head>
 
   <body class="h-full">
+   <%= render partial: "shared/flash" %>
+   
     <% if current_shop_session %>
       <%= render "layouts/sidebar_layout" %>
     <% else %>
