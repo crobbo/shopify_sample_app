@@ -17,7 +17,7 @@ module Shopify
     
         loop do
           liabilites += sum_libalities(orders)
-          break unless ShopifyAPI::Product.next_page?
+          break unless ShopifyAPI::Order.next_page?
     
           orders = ShopifyAPI::Order.all(
             session: @session, 
@@ -26,7 +26,7 @@ module Shopify
             financial_status: 'paid',
             status: 'open',
             limit: 250,
-            page_info: ShopifyAPI::Product.next_page_info
+            page_info: ShopifyAPI::Order.next_page_info
           )
         end
   

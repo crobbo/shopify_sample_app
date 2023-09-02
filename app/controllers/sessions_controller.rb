@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
 
   def destroy 
     cookies.delete("shopify_app_session")
-    redirect_to login_path
+    redirect_to login_path, notice: "Successfully logged out."
   end
 
   private 

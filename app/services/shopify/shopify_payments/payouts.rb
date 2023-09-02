@@ -8,12 +8,17 @@ module Shopify
         @temp_hash = Hash.new { |hash, key| hash[key] = { "fee_payouts" => 0.0 } }
         fee_adjustments_by_gateway = []
         
+        puts "#{@date.iso8601}"
+
+        puts "Fetching payouts..."
+
         payouts = ShopifyAPI::Payout.all(
           session: @session, 
-          date_max: @date.beginning_of_day.iso8601,
-          date_min: @date.end_of_day.iso8601,
+          # date_min: @date.beginning_of_day.iso8601,
+          # date_max: (@date + 1.day).beginning_of_day.iso8601,
           limit: 250
         )
+        
     
         loop do
           build_payout_hash(payouts)
@@ -21,11 +26,11 @@ module Shopify
     
           payouts = ShopifyAPI::Payout.all(
             session: @session, 
-            date_min: @date.beginning_of_day.iso8601,
-            date_max: @date.end_of_day.iso8601,
-            limit: 250,
-            page_info: ShopifyAPI::Product.next_page_info
+            # date_min: @date.beginning_of_day.iso8601,
+            # date_max: (@date + 1.day).beginning_of_day.iso8601,
+            limit: 250
           )
+          
         end
     
         @temp_hash.each do |payment_processor, data|

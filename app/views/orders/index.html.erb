@@ -46,17 +46,24 @@
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              <% @data.each_with_index do |row, index|  %>
+              <% if @data.is_a? Float %>
                 <tr>
-                  <% row.count.times do |i| %>
-                    <% if i == 0 %>
-                      <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= row[@table_row_keys[i]] %> </td>
-                    <% else %>
-                      <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= row[@table_row_keys[i]] %></td>
-                    <% end %>
-                  <% end %>
+                   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= @data %> </td>
                 </tr>
+              <% else %>
+                <% @data.each_with_index do |row, index|  %>
+                  <tr>
+                    <% row.count.times do |i| %>
+                      <% if i == 0 %>
+                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0"><%= row[@table_row_keys[i]] %> </td>
+                      <% else %>
+                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500"><%= row[@table_row_keys[i]] %></td>
+                      <% end %>
+                    <% end %>
+                  </tr>
+                <% end %>
               <% end %>
+
             </tbody>
           </table>
         </div>

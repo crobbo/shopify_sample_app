@@ -34,7 +34,7 @@ class ShopifyAuthController < ApplicationController
 
       redirect_to root_path, notice: "Logged in!"
     rescue
-      redirect_to root_path, notice: "Failed to authenticate"
+      redirect_to root_path, error: "Failed to authenticate."
     end
   end
 end

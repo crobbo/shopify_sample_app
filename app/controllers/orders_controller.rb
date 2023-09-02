@@ -6,7 +6,7 @@ class OrdersController < ApplicationController
     @selected_order_data = query_params[:order_data]
 
     unless shop
-      flash[:error] = "Failed to find your store. Please clear browser cookies and try again."
+      flash[:error] = "Failed to find your store. Try logging out or clearing browser cookies."
       return
     end
   
@@ -23,12 +23,12 @@ class OrdersController < ApplicationController
         @data = @data_object.first
         @table_headers = @data_object.second
         @table_row_keys = @data_object.third
+
+        flash[:success] = "Successfully fetched requested data."
       end
 
-      flash[:success] = "Successfully fetched requested data."
-
-    rescue
-      Rails.logger.error "Failed to fetch requested data."
+    rescue => e
+      Rails.logger.error e.message
       flash[:error] = "Failed to fetch requested data. Please try again."
     end
   end

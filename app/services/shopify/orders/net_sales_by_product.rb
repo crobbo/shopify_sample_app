@@ -16,14 +16,14 @@ module Shopify
     
         loop do
           build_net_sales_hash(orders)
-          break unless ShopifyAPI::Product.next_page?
+          break unless ShopifyAPI::Order.next_page?
     
           orders = ShopifyAPI::Order.all(
             session: @session, 
             created_at_min: @date.beginning_of_day.iso8601,
             created_at_max: @date.end_of_day.iso8601,
             limit: 250,
-            page_info: ShopifyAPI::Product.next_page_info
+            page_info: ShopifyAPI::Order.next_page_info
           )
         end
     
