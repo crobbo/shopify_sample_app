@@ -32,7 +32,9 @@ class ShopifyAuthController < ApplicationController
         is_online: auth_result[:session].online?
       )
 
-      redirect_to root_path, notice: "Logged in!"
+      session[:shopify_store_url] = shop.store_url
+
+      redirect_to root_path, notice: "Logged in!"    
     rescue
       redirect_to root_path, error: "Failed to authenticate."
     end

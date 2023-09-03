@@ -1,22 +1,26 @@
 class ApplicationController < ActionController::Base
-  before_action :authenitcate_user!
+  before_action :authenticate_user!
 
-  def authenitcate_user!
-    if !valid_cookie_exists
-      redirect_to login_path unless request.path == "/login" || request.path == "/auth/callback"
-    end
+  def authenticate_user!
+    return true if request.path == "/login" || request.path == "/auth/callback"
+
+    redirect_to login_path unless valid_cookie_exists
   end
  
   private
   
   def valid_cookie_exists
-    if cookies["shopify_app_session"]
+    if valid_shop_session
       set_current_shop_session
       true 
     else
       false
     end
   end 
+
+  def valid_shop_session
+    cookies["shopify_app_session"] && cookies["shopify_app_session"].split("_").first == session[:shopify_store_url]
+  end
 
   def set_current_shop_session
     @current_shop_session = cookies["shopify_app_session"]
