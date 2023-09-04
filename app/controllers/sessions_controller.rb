@@ -21,6 +21,7 @@ class SessionsController < ApplicationController
 
   def destroy 
     cookies.delete("shopify_app_session")
+    session[:shopify_store_url] = nil
     redirect_to login_path, notice: "Successfully logged out."
   end
 

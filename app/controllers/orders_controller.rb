@@ -1,4 +1,6 @@
 class OrdersController < ApplicationController
+  before_action :authenticate_user!
+  
   def index 
     shop =  Shop.find_by(store_url: cookies["shopify_app_session"].split("_").first)
 
