@@ -4,10 +4,15 @@ class SessionsController < ApplicationController
   def new
   end
 
-  def create
-    shop = login_params
+  def create 
+    store_url = set_store_url
 
-    auth_response = ShopifyAPI::Auth::Oauth.begin_auth(shop: shop, redirect_path: "/auth/callback")
+    unless valid_shopify_url?(store_url)
+      flash[:error] = "Please enter a valid store url in this format: example-store.myshopify.com"
+      redirect_to login_path and return
+    end
+
+    auth_response = ShopifyAPI::Auth::Oauth.begin_auth(shop: store_url, redirect_path: "/auth/callback")
 
     cookies[auth_response[:cookie].name] = {
       expires: auth_response[:cookie].expires,
@@ -28,7 +33,11 @@ class SessionsController < ApplicationController
   private 
 
   def login_params
-    params.require(:shop)
+    begin
+      params.require(:shop)
+    rescue
+      return nil
+    end
   end
 
   def redirect_if_logged_in
@@ -36,4 +45,16 @@ class SessionsController < ApplicationController
       redirect_to root_path
     end
   end
+
+  def set_store_url
+    return ""  unless login_params
+
+    login_params.sub(/^https?:\/\//, '')
+  end
+
+  def valid_shopify_url?(url)    
+    # Validate the remaining URL with the regular expression
+    regex = /\A[\w-]+\.myshopify\.com\z/
+    !!regex.match(url)
+  end  
 end
