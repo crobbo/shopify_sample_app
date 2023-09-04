@@ -1,18 +1,71 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
+
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
+
 require 'rspec/rails'
 require 'capybara'
 require 'support/database_cleaner'
-# require 'webmock/rspec'
-# Add additional requires below this line. Rails is not loaded until this point!
-# WebMock.disable_net_connect!(allow_localhost: true)
+require "rack_session_access/capybara"
+require 'webmock/rspec'
+require 'support/test.rb'
 
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |file| require file }
+
+# Add additional requires below this line. Rails is not loaded until this point!
+
+WebMock.disable_net_connect!(allow_localhost: true, allow: ["googlechromelabs.github.io", "github.com/mozilla/geckodriver/releases/latest"])
+
+Capybara.register_driver :selenium_chrome_headless do |app|
+  version = Capybara::Selenium::Driver.load_selenium
+  options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
+  browser_options = Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+    opts.add_argument('--headless')
+    opts.add_argument('--disable-gpu') if Gem.win_platform?
+    # Workaround https://bugs.chromium.org/p/chromedriver/issues/detail?id=2650&q=load&sort=-id&colspec=ID%20Status%20Pri%20Owner%20Summary
+    opts.add_argument('--disable-site-isolation-trials')
+    options.add_argument("--window-size=1400,1400")
+  end
+
+  Capybara::Selenium::Driver.new(app, **{ :browser => :chrome, options_key => browser_options })
+end
+
+Capybara.register_driver :selenium_chrome do |app|
+  version = Capybara::Selenium::Driver.load_selenium
+  options_key = Capybara::Selenium::Driver::CAPS_VERSION.satisfied_by?(version) ? :capabilities : :options
+  browser_options = Selenium::WebDriver::Chrome::Options.new.tap do |opts|
+    # Workaround https://bugs.chromium.org/p/chromedriver/issues/detail?id=2650&q=load&sort=-id&colspec=ID%20Status%20Pri%20Owner%20Summary
+    opts.add_argument('--disable-site-isolation-trials')
+  end
+
+  Capybara::Selenium::Driver.new(app, **{ :browser => :chrome, options_key => browser_options })
+end
+
+Capybara.current_driver = :selenium_chrome_headless
 Capybara.server_host = 'localhost'
 Capybara.server_port = '3001'
+Capybara.app_host = "http://localhost:3001"
+
+RSpec.configure do |config|
+  config.before(:each, type: :system, js: true) do
+    driven_by :selenium_chrome_headless
+  end
+
+  config.before(:each, type: :system) do
+    driven_by :rack_test
+  end
+
+  config.before(:each, type: :system, chrome: true) do
+    driven_by :selenium_chrome
+  end
+
+  config.include ShowMeTheCookies, :type => :system
+  config.include Helpers::SystemSpecHelper, type: :system
+  config.include Helpers::RequestSpecHelper, type: :request
+end
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are

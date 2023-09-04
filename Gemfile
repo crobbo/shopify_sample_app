@@ -79,6 +79,9 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
   gem "webmock"
+  gem "show_me_the_cookies"
+  gem 'rack_session_access'
+  gem "launchy"
 end
 
 gem "shopify_api"
